@@ -1,0 +1,15 @@
+{
+  "name": "simple-db",
+  "version": "0.0.1",
+  "description": "Simple bucket/key-value adapters",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test mocha -R spec"
+  },
+  "repository": "https://github.com/CamShaft/simple-db.git",
+  "author": "Cameron Bytheway <cameron@nujii.com>",
+  "license": "MIT",
+  "dependencies": {
+    "node-uuid": "~1.4.0"
+  }
+}
