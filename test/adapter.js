@@ -13,7 +13,7 @@ describe("Adapters", function() {
       before(function() {
         switch(name) {
           case 'mongo':
-            instance = adapter("mongo://127.0.0.1:27017/test");
+            instance = adapter(process.env.MONGO_URL||"mongo://127.0.0.1:27017/test");
             break;
           default:
             instance = adapter();
