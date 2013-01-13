@@ -1,7 +1,9 @@
 
 module.exports = function(host) {
 
-  var _db = require(process.cwd()+"/node_modules/mongoskin").db(host, {safe:true}),
+  var mongo = require(process.cwd()+"/node_modules/mongoskin")
+
+  var _db = mongo.db(host, {safe:true}),
       db = {};
 
   db.get = function(bucket, key, done) {
@@ -22,7 +24,16 @@ module.exports = function(host) {
   };
 
   db.put = function(bucket, key, value, done) {
-    _db.collection(bucket).update({_id: key}, {$set: value}, {upsert: true}, function(err) {
+    var objId;
+    try {
+      objId = mongo.ObjectID.createFromHexString(key);
+    }
+    catch (e) {
+      objId = key;
+    }
+    value._id = objId;
+    _db.collection(bucket).update({_id: objId}, value, {upsert: true}, function(err) {
+      delete value._id;
       done(err);
     });
   };

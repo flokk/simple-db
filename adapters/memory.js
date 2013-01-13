@@ -22,7 +22,7 @@ module.exports = function() {
   db.put = function(bucket, key, value, done) {
     if (!buckets[bucket]) buckets[bucket] = {};
 
-    buckets[bucket][key] = value;
+    buckets[bucket][key] = JSON.parse(JSON.stringify(value));
     done(null);
   };
 

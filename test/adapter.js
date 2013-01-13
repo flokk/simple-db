@@ -61,6 +61,53 @@ describe("Adapters", function() {
         });
       });
 
+      it("should re-'put' a value", function(done) {
+        var value = {hello: "world"},
+            id = "my-id";
+        instance.put("re-put-test", id, value, function(err) {
+          if (err) return done(err);
+
+          var newValue = {hello: "universe"};
+
+          instance.put("re-put-test", id, newValue, function(err, obj) {
+            instance.get("re-put-test", id, function(err, obj) {
+              newValue.should.eql(obj);
+              done(err);
+            });
+          });
+        });
+      });
+
+      it("should update a complex object", function(done) {
+        var value = {
+          email: "test@example.com",
+          age: null,
+          addresses: [
+            {street: "123 Fake Street", zip: 41224},
+            {street: "Center Street"}
+          ]
+        };
+        instance.post("re-put-complex-test", value, function(err, id) {
+          if (err) return done(err);
+
+          var newValue = {
+            email: "test1@example.com",
+            age: 26,
+            addresses: [
+              {street: "Sesame Stree", zip: 09876},
+              {street: "First Center Street", zip: 12345}
+            ]
+          };
+
+          instance.put("re-put-complex-test", id, newValue, function(err, obj) {
+            instance.get("re-put-complex-test", id, function(err, obj) {
+              newValue.should.eql(obj);
+              done(err);
+            });
+          });
+        });
+      });
+
       it("should 'remove' a value", function(done) {
         var value = {hello: "world"};
         instance.post("remove-test", value, function(err, id) {
