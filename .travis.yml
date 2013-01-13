@@ -4,4 +4,4 @@ node_js:
   - 0.8
 services:
   - mongodb
-env: MONGO_URL=mongo://travis:travis@localhost:27017/test
+env: MONGO_URL=mongo://127.0.0.1:27017/test
