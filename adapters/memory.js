@@ -7,7 +7,7 @@ module.exports = function() {
 
   db.get = function(bucket, key, done) {
     done(null, 
-      (buckets[bucket]?JSON.parse(JSON.stringify(buckets[bucket][key])):null)
+      (buckets[bucket]&&buckets[bucket][key]?JSON.parse(JSON.stringify(buckets[bucket][key])):null)
     );
   };
 
@@ -24,6 +24,19 @@ module.exports = function() {
 
     buckets[bucket][key] = value;
     done(null);
+  };
+
+  db.remove = function(bucket, key, done) {
+    if (!buckets[bucket]) buckets[bucket] = {};
+
+    delete buckets[bucket][key];
+    done(null);
+  };
+
+  db.all = function(bucket, done) {
+    done(null,
+      (buckets[bucket]?JSON.parse(JSON.stringify(buckets[bucket])):null)
+    );
   };
 
   return db;
