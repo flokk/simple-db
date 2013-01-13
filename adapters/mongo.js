@@ -22,7 +22,9 @@ module.exports = function(host) {
   };
 
   db.put = function(bucket, key, value, done) {
-    _db.collection(bucket).updateById(key, value, {}, function(err) {
+    value._id = key;
+    _db.collection(bucket).save(value, {}, function(err) {
+      delete value._id;
       done(err);
     });
   };
