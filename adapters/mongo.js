@@ -47,6 +47,8 @@ module.exports = function(host) {
   db.all = function(bucket, done) {
     _db.collection(bucket).find().toArray(function(err, values) {
       var returnValues = {};
+      if (!values) return done(err, {});
+      
       values.forEach(function(value) {
         returnValues[value._id] = value;
         delete value._id;
