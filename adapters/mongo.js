@@ -1,7 +1,7 @@
 
 module.exports = function(host) {
 
-  var _db = require(process.cwd()+"/mongoskin").db(host, {safe:true}),
+  var _db = require(process.cwd()+"/node_modules/mongoskin").db(host, {safe:true}),
       db = {};
 
   db.get = function(bucket, key, done) {
