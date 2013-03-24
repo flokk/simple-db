@@ -5,8 +5,8 @@ Simple bucket/key-value interface
 
 ```js
 db
-  .get("airplanes", "test")
-  .meta({})
+  .get("airplanes", "123")
+  .meta({links: {terminal: {bucket: "terminals", key: "L.A."}}})
   .end(function(err, res){
     
   });

@@ -17,5 +17,6 @@ module.exports = exports = function(name) {
 };
 
 exports.register = function(name, adapter) {
-  adapters[name] = new db(name, adapter);
+  adapters[name] = db(name, adapter);
+  return this;
 };

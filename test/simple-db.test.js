@@ -1,158 +1,162 @@
-var should = require("should")
-  , simpleDb = require("..");
-
-function noop () {}
+var should = require("should");
 
 describe("simple-db", function(){
 
   var db;
 
   before(function() {
-    simpleDb.register("noop", require("./fixtures/noop"));
-    db = simpleDb("noop");
+    db = require("..")
+      .register("noop", require("./fixtures/noop"))("noop");
   });
 
-  beforeEach(function() {
-    db.removeAllListeners();
-  });
-
-  describe("get", function(){
-    it("should call the callback for 'get'", function(done) {
-      db.get("bucket", "key", done);
-    });
-
-    it("should call emit a 'get' event", function(done) {
-      db.on("get", done);
-      db.get("bucket", "key", noop);
-    });
-
-    it("should call emit a 'get' event without a callback", function(done) {
-      db.on("get", done);
-      db.get("bucket", "key");
+  describe("with an object", function(){
+    it("should use 'bucket' and 'key'", function(done) {
+      db
+        .get({bucket:'bucket', key:'key'})
+        .end(function(res) {
+          done();
+        });
     });
   });
 
-  describe("exists", function(){
-    it("should call the callback for 'exists'", function(done) {
-      db.exists("bucket", "key", done);
-    });
-
-    it("should call emit a 'exists' event", function(done) {
-      db.on("exists", done);
-      db.exists("bucket", "key", noop);
-    });
-
-    it("should call emit a 'exists' event without a callback", function(done) {
-      db.on("exists", done);
-      db.exists("bucket", "key");
+  describe("with a callback", function(){
+    it("should invoke .end()", function(done) {
+      db
+        .get('bucket', 'key', function(res) {
+          done();
+        });
     });
   });
 
-  describe("put", function(){
-    it("should call the callback for 'put'", function(done) {
-      db.put("bucket", "key", "value", done);
-    });
-    
-    it("should call the callback for 'put' with metadata", function(done) {
-      db.put("bucket", "key", "value", {}, done);
-    });
-
-    it("should call emit a 'put' event", function(done) {
-      db.on("put", done);
-      db.put("bucket", "key", "value", noop);
-    });
-
-    it("should call emit a 'put' event without a callback", function(done) {
-      db.on("put", done);
-      db.put("bucket", "key", "value");
-    });
-
-    it("should call emit a 'put' event with metadata", function(done) {
-      db.on("put", done);
-      db.put("bucket", "key", "value", {}, noop);
-    });
-
-    it("should call emit a 'put' event with metadata without a callback", function(done) {
-      db.on("put", done);
-      db.put("bucket", "key", "value", {});
+  describe(".end()", function(){
+    it("should issue a call", function(done) {
+      db
+        .get('bucket', 'key')
+        .end(function(res) {
+          done();
+        });
     });
   });
 
-  describe("post", function(){
-    it("should call the callback for 'post'", function(done) {
-      db.post("bucket", "value", done);
-    });
-    
-    it("should call the callback for 'post' with metadata", function(done) {
-      db.post("bucket", "value", {}, done);
-    });
-
-    it("should call emit a 'post' event", function(done) {
-      db.on("post", done);
-      db.post("bucket", "value", noop);
-    });
-
-    it("should call emit a 'post' event without a callback", function(done) {
-      db.on("post", done);
-      db.post("bucket", "value");
-    });
-
-    it("should call emit a 'post' event with metadata", function(done) {
-      db.on("post", done);
-      db.post("bucket", "value", {}, noop);
-    });
-
-    it("should call emit a 'post' event with metadata without a callback", function(done) {
-      db.on("post", done);
-      db.post("bucket", "value", {});
+  describe('res.error', function(){
+    it('should should be an Error object', function(done){
+      db
+        .get('bucket', 'error')
+        .end(function(res){
+          should.exist(res.error);
+          done();
+        });
     });
   });
 
-  describe("remove", function(){
-    it("should call the callback for 'remove'", function(done) {
-      db.remove("bucket", "key", done);
+  describe('res.links', function(){
+    it('should default to an empty object', function(done){
+      db
+        .get('bucket', 'get')
+        .end(function(res){
+          res.links.should.eql({});
+          done();
+        });
     });
 
-    it("should call emit a 'remove' event", function(done) {
-      db.on("remove", done);
-      db.remove("bucket", "key", noop);
+    it('should populate the links from the metadata', function(done){
+      db
+        .get('bucket', 'links')
+        .end(function(res){
+          res.links.friend.should.eql({bucket:"bucket",key:"key"});
+          done();
+        });
     });
 
-    it("should call emit a 'remove' event without a callback", function(done) {
-      db.on("remove", done);
-      db.remove("bucket", "key");
+  });
+
+  describe("db.meta(key, value)", function(){
+    it("should send the metadata info");
+  });
+
+  describe("db.meta(obj)", function(){
+    it("should send the metadata info");
+  });
+
+  describe('req.send(str)', function(){
+    it('should write the string', function(done) {
+      db
+        .post('bucket')
+        .send("this is my value")
+        .end(function(res) {
+          res.ok.should.be.ok;
+          done();
+        });
     });
   });
 
-  describe("all", function(){
-    it("should call the callback for 'all'", function(done) {
-      db.all("bucket", done);
+  describe('req.send(obj)', function(){
+    it('should send an obj', function(done) {
+      db
+        .post('bucket')
+        .send({key:"value"})
+        .end(function(res) {
+          res.ok.should.be.ok;
+          done();
+        });
     });
 
-    it("should call emit a 'all' event", function(done) {
-      db.on("all", done);
-      db.all("bucket", noop);
-    });
+    describe('when called several times', function(){
+      it('should merge the objects', function(done){
+        db
+          .post('bucket')
+          .send({key:"value"})
+          .send({key2:"value2"})
+          .end(function(res) {
+            res.ok.should.be.ok;
+            done();
+          });
+      })
+    })
+  });
 
-    it("should call emit a 'all' event without a callback", function(done) {
-      db.on("all", done);
-      db.all("bucket");
+  describe('.end(fn)', function(){
+    it('should check arity', function(done){
+      db
+        .get('bucket', 'get')
+        .end(function(err, res) {
+          should.not.exist(err);
+          res.ok.should.be.ok;
+          done();
+        });
     });
   });
 
-  describe("keys", function(){
-    it("should call the callback for 'keys'", function(done) {
-      db.keys("bucket", done);
-    });
-
-    it("should call emit a 'keys' event", function(done) {
-      db.on("keys", done);
-      db.keys("bucket", noop);
-    });
-
-    it("should call emit a 'keys' event without a callback", function(done) {
-      db.on("keys", done);
-      db.keys("bucket");
+  describe('.buffer()', function(){
+    it('should enable buffering', function(done){
+      db
+        .getAll('bucket')
+        .buffer()
+        .end(function(err, res) {
+          should.not.exist(err);
+          res.raw.length.should.be.above(1);
+          done();
+        });
     });
   });
+
+  describe('.buffer(false)', function(){
+    it('should disable buffering', function(done){
+      db
+        .getAll('bucket')
+        .buffer(false)
+        .end(function(err, res) {
+          should.not.exist(err);
+          var keys = 0;
+          res.on("data", function(key, value, meta) {
+            keys++;
+          });
+          res.on("end", function() {
+            keys.should.be.above(1);
+            done();
+          });
+        });
+    });
+  });
+
 });

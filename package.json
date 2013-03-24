@@ -14,7 +14,8 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
-    "debug": "~0.7.2"
+    "debug": "~0.7.2",
+    "mime": "~1.2.9"
   },
   "devDependencies": {
     "should": "~1.2.2",
