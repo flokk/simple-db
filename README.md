@@ -17,26 +17,37 @@ Adapters
 API
 ---
 
-#### register
+#### use
 
 Register a connection and give it a name
 
 ```js
 var simpleDB = require("simple-db")
-  , riak = require("simple-db-riak");
+  , riak = require("simple-db-riak")
+  , redis = require("simple-db-redis")
+  , mongo = require("simple-db-mongo");
 
 simpleDB
-  .register("riak", riak({
-    host: "localhost",
-    port: 1234
-  }))
-  .register("riak2", riak({
-    host: "ec210-23-45-67.aws.com",
-    port: 1234
-  }));
+  .use("riak", riak(process.env.RIAK_URL))
+  .use("mongo", mongo("mongodb://user:pass@localhost/my-db"))
+  .use("redis", redis({host: "...", port: 1234}));
 
 ```
 
+#### default
+
+Set the default adapter
+
+```js
+simpleDB
+  .use("riak", riak(...))
+  .use("mongo", riak(...));
+
+simpleDB.default("mongo");
+
+var db = simpleDB(); // db uses `mongo` adapter
+var db2 = simpleDB("riak"); // db uses `riak` adapter
+```
 
 #### get
 ```js
