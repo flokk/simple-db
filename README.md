@@ -6,7 +6,20 @@ Simple bucket/key-value interface
 Usage
 -----
 
-Register the adapter
+Adapters
+--------
+
+* [simple-db-memory](https://github.com/flokk/simple-db-memory)
+* [simple-db-riak](https://github.com/flokk/simple-db-riak)
+* [simple-db-redis](https://github.com/flokk/simple-db-redis)
+* [simple-db-mongo](https://github.com/flokk/simple-db-mongo)
+
+API
+---
+
+#### register
+
+Register a connection and give it a name
 
 ```js
 var simpleDB = require("simple-db")
@@ -24,7 +37,6 @@ simpleDB
 
 ```
 
-Use it
 
 #### get
 ```js
