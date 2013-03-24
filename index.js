@@ -1,14 +1,21 @@
-if (process.env.REDISTOGO_URL) {
-  
-}
-else if (process.env.MONGOHQ_URL) {
-  module.exports = require("./adapters/mongo")(process.env.MONGOHQ_URL);
-}
-else {
-  module.exports = require("./adapters/memory")();
-}
+/**
+ * Module dependencies
+ */
+var db = require("./lib/db");
 
-module.exports._adapters = {
-  mongo: require("./adapters/mongo"),
-  memory: require("./adapters/memory")
+/**
+ * Keep a list of registered databases
+ */
+var adapters = exports._adapters = {};
+
+/**
+ * Expose the adapters
+ */
+module.exports = exports = function(name) {
+  if(!adapters[name]) throw new Error("simple-db adapter '"+name+"' not initialized");
+  return adapters[name];
+};
+
+exports.register = function(name, adapter) {
+  adapters[name] = new db(name, adapter);
 };
