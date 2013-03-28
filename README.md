@@ -53,15 +53,15 @@ var db2 = simpleDB("riak"); // db uses `riak` adapter
 ```js
 var db = require("simple-db")("riak");
 
-db.get("databases", "redis")
+db.get("food", "pizza")
   .end(function(err, res){
-    console.log(res.body); // {name: "Redis"}
+    console.log(res.body); // {name: "pizza", topings: ["pepperoni"]
   });
 ```
 
 #### head
 ```js
-db.head("databases", "redis")
+db.head("food", "steak")
   .end(function(err, res){
     console.log(res.metadata); // {...}
   });
@@ -69,8 +69,8 @@ db.head("databases", "redis")
 
 #### post
 ```js
-db.post("databases")
-  .send({name: "Mongo"})
+db.post("food")
+  .send({name: "casserole"})
   .end(function(res){
     console.log(res.key); // generated on the server
   });
@@ -78,16 +78,16 @@ db.post("databases")
 
 #### put
 ```js
-db.put("databases", "riak")
-  .send({name: "Riak"})
+db.put("food", "burger")
+  .send({name: "burger", toppins: ["tomatoes","cheese"]})
   .end(function(res){
-    console.log(res.key); // riak
+    console.log(res.key); // burger
   });
 ```
 
 #### remove
 ```js
-db.remove("databases", "cassandra")
+db.remove("food", "broccoli")
   .end(function(res){
     console.log(res.ok) // true
   });
@@ -95,7 +95,7 @@ db.remove("databases", "cassandra")
 
 #### exists
 ```js
-db.exists("databases", "neo4j")
+db.exists("food", "apple")
   .end(function(res){
     console.log(res.body) // false
   });
@@ -103,15 +103,15 @@ db.exists("databases", "neo4j")
 
 #### keys
 ```js
-db.keys("databases")
+db.keys("food")
   .end(function(res){
-    console.log(res.body) // ['redis', 'uuid', 'riak']
+    console.log(res.body) // ['pizza', 'steak', 'uuid', 'burger']
   })
 ```
 
 #### count
 ```js
-db.count("databases")
+db.count("food")
   .end(function(res){
     console.log(res.body) // 3
   })
@@ -121,6 +121,6 @@ db.count("databases")
 ```js
 db.buckets()
   .end(function(res){
-    console.log(res.body) // ['databases']
+    console.log(res.body) // ['food']
   })
 ```
