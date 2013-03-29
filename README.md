@@ -49,72 +49,10 @@ var db = simpleDB(); // db uses `mongo` adapter
 var db2 = simpleDB("riak"); // db uses `riak` adapter
 ```
 
-#### get
+#### one-line
+
 ```js
 var db = require("simple-db")("riak");
-
-db.get("food", "pizza")
-  .end(function(err, res){
-    console.log(res.body); // {name: "pizza", topings: ["pepperoni"]
-  });
-```
-
-#### head
-```js
-db.head("food", "steak")
-  .end(function(err, res){
-    console.log(res.metadata); // {...}
-  });
-```
-
-#### post
-```js
-db.post("food")
-  .send({name: "casserole"})
-  .end(function(res){
-    console.log(res.key); // generated on the server
-  });
-```
-
-#### put
-```js
-db.put("food", "burger")
-  .send({name: "burger", toppins: ["tomatoes","cheese"]})
-  .end(function(res){
-    console.log(res.key); // burger
-  });
-```
-
-#### remove
-```js
-db.remove("food", "broccoli")
-  .end(function(res){
-    console.log(res.ok) // true
-  });
-```
-
-#### exists
-```js
-db.exists("food", "apple")
-  .end(function(res){
-    console.log(res.body) // false
-  });
-```
-
-#### keys
-```js
-db.keys("food")
-  .end(function(res){
-    console.log(res.body) // ['pizza', 'steak', 'uuid', 'burger']
-  })
-```
-
-#### count
-```js
-db.count("food")
-  .end(function(res){
-    console.log(res.body) // 3
-  })
 ```
 
 #### buckets
@@ -124,3 +62,78 @@ db.buckets()
     console.log(res.body) // ['food']
   })
 ```
+
+#### count
+```js
+// db.count(bucket)
+db.count("food")
+  .end(function(res){
+    console.log(res.body) // 3
+  })
+```
+
+#### keys
+```js
+// db.keys(bucket)
+db.keys("food")
+  .end(function(res){
+    console.log(res.body) // ['pizza', 'steak', 'burger-key']
+  })
+```
+
+#### get
+```js
+// db.get(bucket, key)
+db.get("food", "pizza")
+  .end(function(err, res){
+    console.log(res.body); // {name: "pizza", toppings: ["pepperoni"]}
+  });
+```
+
+#### head
+```js
+// db.head(bucket, key)
+db.head("food", "steak")
+  .end(function(err, res){
+    console.log(res.metadata); // {...}
+  });
+```
+
+#### post
+```js
+// db.post(bucket)
+db.post("food")
+  .send({name: "casserole"})
+  .end(function(res){
+    console.log(res.key); // generated on the server
+  });
+```
+
+#### put
+```js
+// db.put(bucket, key)
+db.put("food", "burger-key")
+  .send({name: "burger", toppings: ["tomatoes","cheese"]})
+  .end(function(res){
+    console.log(res.key); // burger-key
+  });
+```
+
+#### remove
+```js
+// db.remove(bucket, key)
+db.remove("food", "broccoli")
+  .end(function(res){
+    console.log(res.ok) // true
+  });
+```
+
+#### exists
+```js
+// db.exists(bucket, key)
+db.exists("food", "apple")
+  .end(function(res){
+    console.log(res.body) // false
+  });
+```
+
